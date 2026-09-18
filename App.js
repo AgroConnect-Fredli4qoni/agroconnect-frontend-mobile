@@ -1,28 +1,61 @@
-import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View, SafeAreaView, TouchableOpacity } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { WeatherScreen } from './screens/WeatherScreen';
+import { InventoryScreen } from './screens/InventoryScreen';
+import { OrdersScreen } from './screens/OrdersScreen';
 
 export default function App() {
+  const [activeTab, setActiveTab] = useState('weather');
+
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar style="auto" />
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.header}>
-          <Text style={styles.logoIcon}>🌱</Text>
-          <Text style={styles.headerTitle}>AgroConnect Mobile</Text>
-          <Text style={styles.subtitle}>Aplikasi Lapangan Petani Modern</Text>
-        </View>
+      <StatusBar style="dark" />
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>🌤️ Status Cuaca Lapangan</Text>
-          <Text style={styles.cardContent}>Terhubung ke BMKG Weather Service (:8083)</Text>
+      <View style={styles.navbar}>
+        <View style={styles.brand}>
+          <Text style={styles.brandIcon}>🌱</Text>
+          <View>
+            <Text style={styles.brandName}>AgroConnect Mobile</Text>
+            <Text style={styles.brandSub}>Operasional Petani Lapangan</Text>
+          </View>
         </View>
+      </View>
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>📦 Inventaris Kebun</Text>
-          <Text style={styles.cardContent}>Terhubung ke Catalog NoSQL Service (:8081)</Text>
-        </View>
-      </ScrollView>
+      <View style={styles.tabBar}>
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'weather' && styles.tabActive]}
+          onPress={() => setActiveTab('weather')}
+        >
+          <Text style={[styles.tabText, activeTab === 'weather' && styles.tabTextActive]}>
+            🌤️ Cuaca
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'inventory' && styles.tabActive]}
+          onPress={() => setActiveTab('inventory')}
+        >
+          <Text style={[styles.tabText, activeTab === 'inventory' && styles.tabTextActive]}>
+            📦 Inventaris
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.tabBtn, activeTab === 'orders' && styles.tabActive]}
+          onPress={() => setActiveTab('orders')}
+        >
+          <Text style={[styles.tabText, activeTab === 'orders' && styles.tabTextActive]}>
+            📋 Pesanan
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.screenContainer}>
+        {activeTab === 'weather' && <WeatherScreen />}
+        {activeTab === 'inventory' && <InventoryScreen />}
+        {activeTab === 'orders' && <OrdersScreen />}
+      </View>
     </SafeAreaView>
   );
 }
@@ -30,45 +63,62 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#ffffff',
   },
-  scroll: {
-    padding: 20,
+  navbar: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e2e8f0',
   },
-  header: {
+  brand: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 30,
+    gap: 10,
   },
-  logoIcon: {
-    fontSize: 48,
-    marginBottom: 8,
+  brandIcon: {
+    fontSize: 28,
   },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  brandName: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#064e3b',
+  },
+  brandSub: {
+    fontSize: 12,
+    color: '#64748b',
+  },
+  tabBar: {
+    flexDirection: 'row',
+    backgroundColor: '#f1f5f9',
+    padding: 6,
+    marginHorizontal: 16,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+  tabBtn: {
+    flex: 1,
+    paddingVertical: 8,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  tabActive: {
+    backgroundColor: '#ffffff',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  tabText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#64748b',
+  },
+  tabTextActive: {
     color: '#059669',
   },
-  subtitle: {
-    fontSize: 14,
-    color: '#64748b',
-    marginTop: 4,
-  },
-  card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#0f172a',
-    marginBottom: 6,
-  },
-  cardContent: {
-    fontSize: 13,
-    color: '#64748b',
+  screenContainer: {
+    flex: 1,
   },
 });
